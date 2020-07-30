@@ -21,6 +21,13 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 * ================================================================================*/
+
+/* -------------------------------------------------------------------------------
+ *  
+ *  HEYKUBE Sound - Builds sounds for the HEYKUBE. Search for CUSTOM, and you'll
+ *  see the places to insert your custom Songs our sound effects  
+ *  
+ * ------------------------------------------------------------------------------- */ 
 #include <stdint.h>
 #include <stdbool.h>
     
@@ -36,7 +43,7 @@
 
 // ------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------
-// Code to hadle sound effects
+// Code to handle sound effects
 // ------------------------------------------------------------------------------------------
 // ------------------------------------------------------------------------------------------
         
@@ -45,15 +52,15 @@
 //
 //
 //  select == SONG_TYPE(0) - Plays notes of songs 
-//  num_notes   - sets the total number of of notes in the sequence
-//  *melody     - points to the melody of the song - notes and duration in pairs
+//  num_notes   - sets the total number of of notes in the sequence (2x notes note + duration)
+//  *melody     - pointer to the melody of the song - notes and duration in pairs
 //  note_index  - holds index of current note
 //  rest        - set to true, plays only 90% of note, 10% silence
 //  duration    - holds duration of current note in usecs
 //  time        - records the current time in usecs
 //  tempo       - Sets the beats per minute for the quarter note
 // 
-//  select >= SOUND_EFFECT_A(1) - Plays custom frequuencies 
+//  select >= SOUND_EFFECT_ - Plays custom frequencies sequencies 
 //  num_notes   - sets the total number steps in the sequence
 //  note_index  - holds index of current note
 //  duration    - holds duration of frequency in usecs
@@ -343,180 +350,7 @@ void update_piezo_tone() {
         // continues
         sound_class.note_index++;
     }
-
-
-#ifdef CRAP
-    // -----------------------------------------------
-    // Plays a sound
-    // -----------------------------------------------
-    if (sound_class.select == 1) { 
-        
-        // clear time
-        sound_class.rest = false;
-        sound_class.time -= sound_class.duration;
-        
-        uint16_t notes[] =     {500, 0,   500,   0, 500, 0,  800, 0,   500, 0,  600};
-        uint16_t duration[] = {200, 200, 200, 200, 200, 200, 150, 150, 500, 500, 1000};
-            
-        if (sound_class.note_index < 11) {
-         
-            if (notes[sound_class.note_index] == 0) { 
-                period = 0;  
-            } else {
-                period = PWM_FREQUENCY / notes[sound_class.note_index];
-            }
-            sound_class.duration = duration[sound_class.note_index++]*1000;
-            
-        } else {
-            sound_class.note_index = -1;
-            period = 0;
-            sound_class.duration = 0;
-            sound_class.time = 0;
-        }
-    } else if (sound_class.select == 2) { 
-        
-        // clear time
-        sound_class.rest = false;
-        sound_class.time -= sound_class.duration;
-        
-        uint32_t num_notes = 12;
-        uint16_t notes[] =     {NOTE_C4,0, NOTE_C3,0, NOTE_G3, 0, NOTE_C4,0,
-                                NOTE_E4, 0, NOTE_DS4,0,
-                                NOTE_G1, 0, NOTE_C2, 0,
-                                NOTE_G1, 0, NOTE_C2, 0,
-                                NOTE_G1, 0, NOTE_C2, 0,
-                                NOTE_G1, 0, NOTE_C2, 0,
-                                NOTE_G1, 0, NOTE_C2, 0,                    
-                                NOTE_G1, 0, NOTE_C2, 0,
-                                NOTE_C3,0, NOTE_G3, 0, NOTE_C4,0,
-                                NOTE_E4, 0, NOTE_DS4,0};
-        
-        
-        
-        uint16_t duration[] =  {200,200,1000, 200,  1000, 200, 2000,  200,
-                                200, 200, 2000, 200, 
-                                90, 90, 90, 90,
-                                90, 90, 90, 90,
-                                90, 90, 90, 90,
-                                90, 90, 90, 90,
-                                90, 90, 90, 90,
-                                90, 90, 90, 90,
-                                1000, 200,  1000, 200, 2000,  200,
-                                200, 200, 2000, 200}; 
-            
-            
-        
-            
-        if (sound_class.note_index < num_notes) {
-         
-            if (notes[sound_class.note_index] == 0) { 
-                period = 0;  
-            } else {
-                period = PWM_FREQUENCY / notes[sound_class.note_index];
-            }
-            sound_class.duration = duration[sound_class.note_index]*1000;
-            sound_class.note_index++;
-            
-        } else {
-            sound_class.note_index = -1;
-            period = 0;
-            sound_class.duration = 0;
-            sound_class.time = 0;
-        }
-       
-    } else if (sound_class.select == 3) { 
-        
-        // clear time
-        sound_class.rest = false;
-        sound_class.time -= sound_class.duration;
-            
-        // triangle wave
-        if (sound_class.note_index < BEEP_DURATION) { 
-            // Setup PWM frequency 
-            sound_class.duration = 2000;
-            period = PWM_FREQUENCY / ( BEEP_PITCH + (sound_class.note_index*BEEP_RANGE)/BEEP_DURATION);
-            sound_class.note_index++;
-        } else {
-            sound_class.note_index = -1;
-            period = 0;
-            sound_class.duration = 0;
-            sound_class.time = 0;
-        }    
-        
-    } else if (sound_class.select == 4) {
-     
-        // notes of the moledy followed by the duration.
-        // a 4 means a quarter note, 8 an eighteenth , 16 sixteenth, so on
-        // !!negative numbers are used to represent dotted notes,
-        // so -4 means a dotted quarter note, that is, a quarter plus an eighteenth!!
-        int16_t melody[] = {
-          
-          // Dart Vader theme (Imperial March) - Star wars 
-          // Score available at https://musescore.com/user/202909/scores/1141521
-          // The tenor saxophone part was used
-          
-          NOTE_A4,-4, NOTE_A4,-4, NOTE_A4,16, NOTE_A4,16, NOTE_A4,16, NOTE_A4,16, NOTE_F4,8, REST,8,
-          NOTE_A4,-4, NOTE_A4,-4, NOTE_A4,16, NOTE_A4,16, NOTE_A4,16, NOTE_A4,16, NOTE_F4,8, REST,8,
-          NOTE_A4,4, NOTE_A4,4, NOTE_A4,4, NOTE_F4,-8, NOTE_C5,16,
-
-          NOTE_A4,4, NOTE_F4,-8, NOTE_C5,16, NOTE_A4,2,//4
-          NOTE_E5,4, NOTE_E5,4, NOTE_E5,4, NOTE_F5,-8, NOTE_C5,16,
-          NOTE_A4,4, NOTE_F4,-8, NOTE_C5,16, NOTE_A4,2,
-          
-          NOTE_A5,4, NOTE_A4,-8, NOTE_A4,16, NOTE_A5,4, NOTE_GS5,-8, NOTE_G5,16, //7 
-          NOTE_DS5,16, NOTE_D5,16, NOTE_DS5,8, REST,8, NOTE_A4,8, NOTE_DS5,4, NOTE_D5,-8, NOTE_CS5,16,
-
-          NOTE_C5,16, NOTE_B4,16, NOTE_C5,16, REST,8, NOTE_F4,8, NOTE_GS4,4, NOTE_F4,-8, NOTE_A4,-16,//9
-          NOTE_C5,4, NOTE_A4,-8, NOTE_C5,16, NOTE_E5,2,
-
-          NOTE_A5,4, NOTE_A4,-8, NOTE_A4,16, NOTE_A5,4, NOTE_GS5,-8, NOTE_G5,16, //7 
-          NOTE_DS5,16, NOTE_D5,16, NOTE_DS5,8, REST,8, NOTE_A4,8, NOTE_DS5,4, NOTE_D5,-8, NOTE_CS5,16,
-
-          NOTE_C5,16, NOTE_B4,16, NOTE_C5,16, REST,8, NOTE_F4,8, NOTE_GS4,4, NOTE_F4,-8, NOTE_A4,-16,//9
-          NOTE_A4,4, NOTE_F4,-8, NOTE_C5,16, NOTE_A4,2,
-          
-        };
-        sound_class.num_notes = sizeof(melody) / sizeof(melody[0]);
-        
-
-        // clear time
-        sound_class.rest = false;
-        sound_class.time -= sound_class.duration;
-        
-        // find the period
-        period = play_note_sequence(melody, sound_class.num_notes);
-           
-    } else if (sound_class.select == 5) {
-     
-        // notes of the moledy followed by the duration.
-        // a 4 means a quarter note, 8 an eighteenth , 16 sixteenth, so on
-        // !!negative numbers are used to represent dotted notes,
-        // so -4 means a dotted quarter note, that is, a quarter plus an eighteenth!!
-        int16_t melody[] = {
-          NOTE_CS4,8, NOTE_E4, 8, NOTE_E4, 8, NOTE_FS4, 8, NOTE_E4, 4, 
-          NOTE_D4,8, NOTE_CS4, 8, NOTE_B3, 8, NOTE_A3, 8, NOTE_GS3, -4, NOTE_A3, -4,
-          // second refrain
-          NOTE_CS4,8, NOTE_E4, 8, NOTE_E4, 8, NOTE_FS4, 8, NOTE_E4, 4, 
-          NOTE_D4,8, NOTE_CS4, 8, NOTE_B3, 8, NOTE_A3, 8, NOTE_GS3, -4, NOTE_A3, -4    
-        };
-        sound_class.num_notes = sizeof(melody) / sizeof(melody[0]);
-       
-        // clear time
-        sound_class.rest = false;
-        sound_class.time -= sound_class.duration;
-        
-        // find the period
-        period = play_note_sequence(melody, sound_class.num_notes);
-            
-     
-    } else { 
-
-        period = 0;
-        sound_class.note_index = -1;
-        
-    }
-#endif
-
+    
     // setup Period
     play_freq_piezo(freq);
 
@@ -741,9 +575,6 @@ void setup() {
   Serial.begin(9600);
   
 }
-
-
-
 
 
 // ----------------------------------
