@@ -1,12 +1,10 @@
-# heykube_sound
+# HEYKUBE Sound Generator
 
-This Arduino project give you the ability to play sounds and sound effects on an Arduino Uno board using a piezo buzzer, and using TIMER1 pulse-width modulation (PWM) mode to play the notes. We've developed the HEYKUBE by starting with tools and resource like Arduino board, so we'd like to share the code back with the community. 
-
-More importantly, we're happy to see the sound effects you are able to generate and release into the world. 
+This Arduino project give you the ability to play sounds and sound effects on an Arduino Uno board using a piezo buzzer, and using TIMER1 pulse-width modulation (PWM) mode to play the notes. We've developed the HEYKUBE by starting with tools and resource like Arduino board from the open-source community, so we'd like to share the code back with everyone. We've chosen the MIT license, feel free to copy and use the code. 
 
 ## Getting Started
 
-This project is simple, download the Arduino project, and hook-up a piezo buzzer to pin 9 on your Arduino Uno board. In the code base there are 5 defined sounds that can be played, and anywhere you see the word "CUSTOM", you can edit your own music or sound effects
+This project is simple, download the Arduino project, and hook-up a piezo buzzer to pin 9 on your Arduino Uno board. In the code there are 5 defined sounds that can be played, and anywhere you see the word "CUSTOM", you can edit your own music or sound effects
 
 ```
 // Define the songs
@@ -35,7 +33,7 @@ uint16_t success_notes[] = {NOTE_C5, QUARTER_NOTE,  NOTE_REST, QUARTER_NOTE, NOT
                             NOTE_C5, HALF_NOTE | EIGHTH_NOTE, NOTE_C5, HALF_NOTE | EIGHTH_NOTE, NOTE_D5, WHOLE_NOTE | QUARTER_NOTE};
 ```
 
-The sequence is always the note frequency (like NOTE_C5 is defined at 523 Hz) followed by the duration.  The duration is a union of the Quarter notes, half notes, eighth and sixteen notes. If the DOTTED_NOTE is added to the duration, the entire note is stretched by 50% longer cycle. 
+The sequence is always the note frequency (like NOTE_C5 is defined at 523 Hz) followed by the duration.  The duration is a union of the whole notes, quarter notes, half notes, eighth and sixteen notes. If the DOTTED_NOTE is added to the duration, the entire note is stretched by 50% longer cycle. 
 
 The tempo variable sets to overall speed of the song measured in quarter notes beats per minute. 
 
